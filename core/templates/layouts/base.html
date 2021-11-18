@@ -1,0 +1,202 @@
+{% load static %}
+
+<!--
+=========================================================
+Material Kit - v2.0.7
+=========================================================
+
+Product Page: https://www.creative-tim.com/product/material-kit
+Copyright 2020 Creative Tim (https://www.creative-tim.com/)
+
+Coded by Creative Tim
+
+=========================================================
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'assets/img/apple-icon.png' %}">
+    <!-- <link rel="icon" type="image/png" href="{% static 'assets/img/favicon.png' %}"> -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>{% block title %}{% endblock %}</title>
+    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+    <!-- Fonts and icons -->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/material-icons-fonts.css' %}"/>
+    <!-- CSS Files -->
+    <link href="{% static 'assets/css/jquery-ui.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/material-kit.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/varios/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/varios/DateTimePicker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/varios/jquery.timepicker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/varios/datatables.min.css' %}" rel="stylesheet"/>
+
+    <!-- Chatbot -->
+    <link href="{% static 'assets/css/varios/chatbot-style.css' %}" rel="stylesheet"/>
+
+    {% block stylesheets %}
+        <link href="{% static 'assets/css/varios/estilos_base.css' %}" rel="stylesheet"/>
+    {% endblock %}
+
+    {% block more-stylesheets %}{% endblock %}
+    {% include 'includes/marca_blanca.html' %}
+</head>
+
+<body class="index-page wrapper">
+    {% block navbar %}
+        <nav id="sidebar" class="">
+            <div class="sidebar-header color_2">
+                <img class="sidebar-img" src="/media/{{ request.session.empresa.logo }}" style="width: 128px" alt="">
+                {% block navbar_user %}
+                    <div class="sidebar-username"><b>{{ user }}</b></div>
+                    <div class="sidebar-email">{{ user.email }}</div>
+                {% endblock %}
+            </div>
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="{% url 'inicio' %}">
+                        <i class="material-icons" style="font-size:32px; width: 32px; height: 32px">home</i><span>Inicio</span>
+                    </a>
+                </li>
+
+                {% if request.session.dni > 0 %}
+                    {% include 'layouts/nav_deudor.html' %}
+                {% else %}
+                    {% if request.user.usuarioempresa.role == 1 %}
+                        {% include 'layouts/nav_cliente_deuda.html' %}
+                    {% elif request.user.usuarioempresa.role == 2 %}
+                        {% include 'layouts/nav_cliente_equipo.html' %}}
+                    {% elif request.user.usuarioempresa.role == 3 or request.user.usuarioempresa.role == 4 %}
+                        {% include 'layouts/nav_cliente_deuda.html' %}
+                        {% include 'layouts/nav_cliente_equipo.html' %}}
+                    {% endif %}
+
+                    {% if request.user.usuarioempresa.role == 4 %}
+                        <li>
+                            <a href="{% url 'listado_general' %}">
+                                <img src="{% static 'assets/img/icons-2@4x.png' %}" style="width: 32px" alt=""><span>Usuarios y empresas</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'upload_csv' %}">
+                                <img src="{% static 'assets/img/icons-3@4x.png' %}" style="width: 32px" alt=""><span>Carga de archivos</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li>
+                        <a href="{% url 'mod_usuario' user.id %}">
+                        <img src="{% static 'assets/img/icons-14@4x.png' %}" style="width: 32px" alt=""><span>Configuración</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'logout' %}">
+                            <img src="{% static 'assets/img/icons-13@4x.png' %}" style="width: 32px" alt="">
+                            <span>Cerrar sesión</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <nav id="bottombar" class="navbar fixed-bottom">
+            <div class="container">
+                <a href="{% url 'inicio' %}">
+                    <i class="material-icons" style="font-size:32px; width: 32px; height: 32px">home</i>
+                    <br>
+                    <span>Inicio</span>
+                </a>
+                {% if request.session.dni > 0 %}
+                    <!--
+                    <a class="link_wpp" href="#" target="_blank">
+                        <img class="imgWpp" src="{% static 'assets/img/logos/whatsapp-logo-1.png' %}" style="width: 32px" alt=""/>
+                        <br>
+                        <span>Contáctenos</span>
+                    </a>
+                    -->
+                {% endif %}
+                <a href="#">
+                    <button class="navbar-toggler" type="button" id="btn-toggle-bottom" data-toggle="collapse" data-target="#navbar-bottom" aria-controls="navbar-bottom" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="navbar-toggler-icon"></span>
+                        <span class="navbar-toggler-icon"></span>
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <br>
+                    <span>Más</span>
+                </a>
+
+                <div class="collapse navbar-collapse" id="navbar-bottom">
+                    <ul class="navbar-nav">
+                        {% if request.session.dni > 0 %}
+                            {% include 'layouts/nav_deudor.html' %}
+                        {% else %}
+                            {% if request.user.usuarioempresa.role == 1 %}
+                                {% include 'layouts/nav_cliente_deuda.html' %}
+                            {% elif request.user.usuarioempresa.role == 2 %}
+                                {% include 'layouts/nav_cliente_equipo.html' %}
+                            {% elif request.user.usuarioempresa.role == 3 or request.user.usuarioempresa.role == 4 %}
+                                {% include 'layouts/nav_cliente_deuda.html' %}
+                                {% include 'layouts/nav_cliente_equipo.html' %}
+                            {% endif %}
+
+                            {% if request.user.usuarioempresa.role == 4 %}
+                                <li>
+                                    <a href="{% url 'listado_general' %}">
+                                        <img src="{% static 'assets/img/icons-2@4x.png' %}" style="width: 32px" alt=""><span>Usuarios y empresas</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'upload_csv' %}">
+                                        <img src="{% static 'assets/img/icons-3@4x.png' %}" style="width: 32px" alt=""><span>Carga de archivos</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            <li>
+                                <a href="{% url 'mod_usuario' user.id %}">
+                                <img src="{% static 'assets/img/icons-14@4x.png' %}" style="width: 32px" alt=""><span>Configuración</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'logout' %}">
+                                    <img src="{% static 'assets/img/icons-13@4x.png' %}" style="width: 32px" alt="">
+                                    <span>Cerrar sesión</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    {% endblock %}
+
+    <div class="main-content">
+        {% block main-content %}{% endblock main-content %}
+    </div>
+
+    {% block chatbot-content %}
+        <div id="chatbot-content">
+            {% include 'chatbot/chatbot.html' %}
+        </div>
+    {% endblock %}
+
+    {% include 'includes/scripts.html' %}
+
+    <script>
+        $(document).ready(function() {
+            materialKit.initFormExtendedDatetimepickers()
+            $('.var-button').on('click', function () {
+                $('#sidebar').toggleClass('active')
+                $(this).toggleClass('active')
+            })
+        })
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

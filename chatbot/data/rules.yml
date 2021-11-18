@@ -1,0 +1,7 @@
+version: "2.0"
+
+rules:
+- rule: Prueba
+  steps:
+  - intent: prueba
+  - action: action_saludo

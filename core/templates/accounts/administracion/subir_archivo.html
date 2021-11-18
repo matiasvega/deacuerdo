@@ -1,0 +1,42 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Carga de archivos {% endblock %}
+
+
+{% block main-content %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card card-principal">
+            <div class="card-header card-header-primary">
+                <h3>Carga de archivos</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group form-file-upload form-file-simple">
+                    <input type="text" class="form-control inputFileVisible" placeholder="Seleccione un archivo">
+                    <input type="file" name="docfile" class="inputFileHidden" required>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Confirmar carga</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block chatbot-content %}{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function() {
+            let msg = '{{ msg }}'
+            if (msg !== '') {
+                Swal.fire({
+                    title: 'Éxito',
+                    text: msg,
+                    icon: 'success',
+                })
+            }
+        })
+    </script>
+{% endblock %}

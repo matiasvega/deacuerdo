@@ -1,0 +1,109 @@
+{% load static %}
+{% load barcode_tags %}
+
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link href="{% static 'assets/css/material-kit.css' %}" rel="stylesheet" />
+        <title>Cupon de pago</title>
+        <style>
+            @page {
+                margin: 1.0cm 1.5cm 3.5cm 1.5cm;
+            }
+            body {
+                width: 100% !important;
+                height: 100%;
+                background: #fff;
+                color: black;
+                font-size: 100%;
+                font-family: 'Roboto', sans-serif;
+                line-height: 1.65;
+                -webkit-font-smoothing: antialiased;
+                -webkit-text-size-adjust: none;
+            }
+
+            #container {
+                padding: 20px;
+                border: 1px solid black;
+                margin: 0 200px;
+            }
+
+            #body_cupon p {
+                text-align: left;
+                font-size: 18px;
+            }
+
+            #body_cupon span {
+                float: right;
+            }
+
+            #medios_pago_cupon {
+                margin: 0 110px 0;
+                text-align: center;
+            }
+
+            #container_codbarra {
+                margin: 0 auto;
+                justify-content: center;
+                align-items: center;
+                height: 50px;
+                width: 50%;
+            }
+
+            #codbarra {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+            }
+        </style>
+    </head>
+    <body>
+        <main id="container">
+            <div id="head_cupon" class="row" style="padding: 0 15px">
+                <div class="column">
+                    <img src="/media/{{ deuda.empresa.logo }}" style="width: 128px" alt="">
+                </div>
+                <div class="column">
+                    <p style="font-size: 32px; margin-left: 75px">Cupón de Pago</p>
+                </div>
+            </div>
+            <hr>
+            <div id="body_cupon">
+                <p>
+                    Empresa: <span>{{ empresa }}</span><br>
+                    Cliente: <span>{{ deudor.nyap }}</span><br>
+                    N° de Cuenta: <span>{{ deuda.nrocuenta }}</span><br>
+                    Importe a Abonar: <span>${{ deuda.saldo }}</span><br>
+                    {% if deuda.servicio %}
+                        Concepto: <span>{{ deuda.servicio }}</span><br>
+                    {% endif %}
+                    Fecha de Vencimiento: <span>{{ venc|date:'d/m/Y' }}</span><br>
+                </p>
+                <br>
+                <div id="container_codbarra">
+                    {% barcode_generate deuda.codbarra as barcode_svg %}
+                    <img id="codbarra" src="data:image/svg+xml, {{ barcode_svg }}" alt=""/>
+                </div>
+                <div style="text-align: center">
+                    {{ deuda.codbarra }}
+                </div>
+            </div>
+            <hr>
+            <div id="footer_cupon">
+                <p style="text-align: center">Medios de pago</p><br>
+                <div id="medios_pago_cupon" class="row">
+                    <div class="col">
+                        <img src="{% static 'assets/img/logos/pago-facil-logo.png' %}" style="width: 64px" alt="">
+                    </div>
+                    <div class="col">
+                        <img src="{% static 'assets/img/logos/rapipago-logo.png' %}" style="width: 64px" alt="">
+                    </div>
+                    <div class="col">
+                        <img src="{% static 'assets/img/logos/Mercadopago-logo.png' %}" style="width: 64px" alt="">
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

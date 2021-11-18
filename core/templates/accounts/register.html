@@ -1,0 +1,34 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Registro {% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block main-content %}
+    <div class="card">
+        <div class="card-header card-header-primary">
+            <h4 class="card-title">Registro de usuario</h4>
+        </div>
+        <div class="card-body">
+            <h6 class="card-category">
+                {% if msg %}
+                    <span class="text-danger">{{ msg }}</span>
+                {% endif %}
+            </h6>
+            {% if not success %}
+                <form role="form" method="post" action="">
+                    {% csrf_token %}
+                    {{ form }}
+                    <br>
+                    <button type="submit" name="register" class="btn btn-primary pull-left">Confirmar registro</button>
+                    <div class="pull-right">
+                        ¿Ya se ha registrado? <a href="{% url 'login' %}" class="text-primary">Login</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock main-content %}
+
+{% block chatbot-content %}{% endblock %}

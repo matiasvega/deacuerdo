@@ -1,0 +1,31 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Alta de Usuario{% endblock %}
+
+{% block main-content %}
+    <div class="card card-principal">
+        <div class="card-header card-header-primary">
+            <h4 class="card-title">Alta de usuario</h4>
+        </div>
+        <div class="card-body">
+            <form role="form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <br><br>
+                {{ form2 }}
+                <br>
+                <button type="submit" name="register" class="btn btn-primary pull-left">Confirmar</button>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+{% endblock main-content %}
+
+{% block chatbot-content %}{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('#id_password1').addClass('form-control')
+        $('#id_password2').addClass('form-control')
+    </script>
+{% endblock %}

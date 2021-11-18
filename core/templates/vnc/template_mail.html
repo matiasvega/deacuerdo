@@ -1,0 +1,33 @@
+{% load static %}
+
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link href="{% static 'assets/css/material-kit.css' %}" rel="stylesheet" />
+        <title></title>
+        <!--
+        <style>
+            
+        </style>
+        -->
+    </head>
+    <body>
+        <main id="container">
+            <!--<img src="cid:logo" style="width: 64px" alt=""><br><br>-->
+            <p>
+                {{ msg }}<br><br>
+                {% if cupon == 'S' %}
+                    <br><br>
+                    Le recordamos que puede abonar el mismo mediante:<br>
+                    <a href="https://pagofacil.gq/11-c/" target="_blank">Pago Facil</a>, 
+                    <a href="https://www.rapipago.com.ar/rapipagoWeb/" target="_blank">Rapipago</a>, 
+                    <a href="https://www.provincianet.com.ar/donde-pago" target="_blank">Bapro</a> o 
+                    <a href="https://www.mercadopago.com.ar/" target="_blank">MercadoPago</a>
+                    <br><br>
+                {% endif %}
+                Recuerde que puede contactarnos mediante <a href="{{ mail_vnc }}">www.deacuerdo.com.ar</a> o por whatsapp al {{ wpp_vnc }}
+            </p>
+        </main>
+    </body>
+</html>

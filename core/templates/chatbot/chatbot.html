@@ -1,0 +1,51 @@
+{% load static %}
+
+<div class="widget">
+    <div class="chat_header">
+        <div class="row row_header_bot justify-content-between">
+            <div class="col-sm-10">
+                <span style="margin-left: 5px; margin-top: 5px; font-weight: lighter" id="close">
+                    <i class="material-icons">west</i>
+                </span>
+                <span style="float: right; display: none" id="reset_bot">
+                    <i class="material-icons">autorenew</i>
+                </span>
+                <br>
+                <div class="chat_header_title">
+                    <span style="font-size: 25px"><b>Asistencia</b></span>
+                    <br>
+                    <span>Chatea para obtener asistencia</span>
+                </div>
+            </div>
+            <!--
+            <div class="col-sm-2" id="col_wpp">
+                <a class="link_wpp" href="#" target="_blank" data-toggle="tooltip" data-placement="top" title="Contáctenos">
+                    <img class="imgWpp" src="{% static 'assets/img/logos/whatsapp-logo-1.png' %}" alt=""/>
+                </a>
+            </div>
+            -->
+            <div class="col-sm-2" id="col_refresh">
+                <a id="restart_bot" href="#" data-toggle="tooltip" data-placement="top" title="Reiniciar bot">
+                    <img id="refreshIcon" src="{% static 'assets/img/refresh_icon.png' %}" alt=""/>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <div class="chats" id="chats">
+        <div class="clearfix"></div>
+    </div>
+    <div class="keypad">
+        <div class="input-group">
+            <input type="text" id="keypad" class="usrInput browser-default" placeholder="Escribe tu mensaje" autocomplete="off">
+            <div id="dtBox"></div>
+            <div class="input-group-append" id="div_btn_send">
+                <button role="button" id="btn_send"><i id="btn_send_icon" class="material-icons">send</i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="profile_div" id="profile_div">
+    <img class="imgProfile" src="{% static 'assets/img/logos/deacuerdo-iso-orange@2x.png' %}" alt=""/>
+</div>
+

@@ -1,0 +1,61 @@
+{% load static %}
+
+{% if request.session.saldo %}
+    <!--
+    <li>
+        <a href="#" class="deudor-cupon-pago">
+            <img src="{% static 'assets/img/icons-5@4x.png' %}" style="width: 32px" alt=""><span>Cupón</span>
+        </a>
+    </li>
+    -->
+    <li>
+        <a href="#">
+            <img src="{% static 'assets/img/icons-8@4x.png' %}" style="width: 32px" alt=""><span>Pasarela</span>
+        </a>
+    </li>
+    <!--
+    <li>
+        <a href="#" class="deudor-informar-pago">
+            <img src="{% static 'assets/img/icons-11@4x.png' %}" style="width: 32px" alt=""><span>Informar pago</span>
+        </a>
+    </li>
+    -->
+{% endif %}
+
+{% if request.session.equipos %}
+    <!--
+    <li>
+        <a href="#" class="deudor-sol-retiro">
+            <img src="{% static 'assets/img/icons-1@4x.png' %}" style="width: 32px" alt=""><span>Solicitar retiro</span>
+        </a>
+    </li>
+    <li>
+        <a href="#" class="deudor-prog-entrega">
+            <img src="{% static 'assets/img/icons-9@4x.png' %}" style="width: 32px" alt=""><span>Entregaré</span>
+        </a>
+    </li>
+    <li>
+        <a href="#" class="deudor-informar-entrega">
+            <img src="{% static 'assets/img/icons-6@4x.png' %}" style="width: 32px" alt=""><span>Informar entrega</span>
+        </a>
+    </li>
+    -->
+{% endif %}
+
+<li>
+    <a href="#" class="datos_deudor">
+        <img src="{% static 'assets/img/icons-14@4x.png' %}" style="width: 32px" alt=""><span>Configuración</span>
+    </a>
+</li>
+<li>
+    <a href="#" class="btn_ayuda">
+        <img src="{% static 'assets/img/icons-12@4x.png' %}" style="width: 32px" alt=""><span>Ayuda</span>
+    </a>
+</li>
+<li>
+    <a href="{% url 'logout' %}">
+        <img src="{% static 'assets/img/icons-13@4x.png' %}" style="width: 32px" alt="">
+        <span>Cerrar sesión</span>
+    </a>
+</li>
+

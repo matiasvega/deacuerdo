@@ -1,0 +1,152 @@
+version: "2.0"
+
+stories:
+- story: Saludo inicial
+  steps:
+  - intent: saludo
+  - checkpoint: check_interaccion
+
+- story: Interacción unica deuda
+  steps:
+  - checkpoint: check_interaccion
+  - action: action_saludo
+  - slot_was_set:
+      - mult_deudas: False
+  - checkpoint: check_opciones_gestion
+
+- story: Interacción multiples deudas
+  steps:
+  - checkpoint: check_interaccion
+  - action: action_saludo
+  - slot_was_set:
+      - mult_deudas: True
+  - checkpoint: check_botones_deuda
+
+- story: Interacción sin deudas
+  steps:
+  - checkpoint: check_interaccion
+  - action: action_saludo
+  - slot_was_set:
+      - sin_deudas: True
+  - action: utter_despedida
+  - action: action_restart
+
+- story: Botones de deudas
+  steps:
+  - checkpoint: check_botones_deuda
+  - action: action_botones_deuda
+
+- story: Set slot deuda
+  steps:
+  - intent: intent_deuda
+  - action: action_set_slots
+  - checkpoint: check_opciones_gestion
+
+- story: Opciones de gestión
+  steps:
+  - checkpoint: check_opciones_gestion
+  - action: action_opciones
+
+- story: Consultar formas de pago
+  steps:
+  - intent: como_pagar
+  - action: action_opciones_pago
+  - action: utter_realizar_otra_accion
+  - checkpoint: check_otra_consulta
+
+- story: Devolver equipo
+  steps:
+  - intent: como_devolver
+  - action: utter_formas_devolucion
+
+- story: Solicitar retiro de equipo
+  steps:
+  - intent: solicitar_retiro
+  - action: utter_solicitar_datos
+  - action: retiro_form
+  - active_loop: retiro_form
+  - active_loop: null
+  - action: action_procesar_compromiso_retiro
+  - action: utter_cierre_retiro
+  - action: utter_realizar_otra_accion
+  - checkpoint: check_otra_consulta
+
+- story: Programar entrega de equipo
+  steps:
+  - intent: programar_entrega
+  - action: utter_solicitar_datos
+  - action: entrega_form
+  - active_loop: entrega_form
+  - active_loop: null
+  - action: action_procesar_compromiso_entrega
+  - action: utter_cierre_entrega
+  - action: utter_realizar_otra_accion
+  - checkpoint: check_otra_consulta
+
+- story: Solicitar cupon de pago
+  steps:
+  - intent: cupon_pago
+  - action: action_boton_cupon
+  - action: utter_realizar_otra_accion
+  - checkpoint: check_otra_consulta
+
+- story: Consultar pago con tarjeta
+  steps:
+  - intent: pago_tarjeta
+  - action: utter_pago_tarjeta
+  - action: contacto_form
+  - active_loop: contacto_form
+  - active_loop: null
+  - action: utter_cierre_tarjeta
+  - action: utter_realizar_otra_accion
+  - checkpoint: check_otra_consulta
+
+- story: Solicitar contacto
+  steps:
+  - intent: contacto
+  - action: utter_contacto
+  - action: contacto_form
+  - active_loop: contacto_form
+  - active_loop: null
+  - action: action_procesar_contacto
+  - action: action_nros_contacto
+  - action: utter_realizar_otra_accion
+  - checkpoint: check_otra_consulta
+
+- story: Informar pago
+  steps:
+  - intent: ya_pague
+  - action: utter_ya_pague
+  - action: informe_pago_form
+  - active_loop: informe_pago_form
+  - active_loop: null
+  - action: action_procesar_informe_pago
+  - action: utter_realizar_otra_accion
+  - checkpoint: check_otra_consulta
+
+
+- story: Informar entrega
+  steps:
+  - intent: ya_entregue
+  - action: utter_ya_entregue
+  - action: informe_entrega_form
+  - active_loop: informe_entrega_form
+  - active_loop: null
+  - action: action_procesar_informe_entrega
+  - action: utter_realizar_otra_accion
+  - checkpoint: check_otra_consulta
+
+- story: Respuesta afirmativa
+  steps:
+  - checkpoint: check_otra_consulta
+  - intent: otra_si
+  - action: action_reset_slots_deuda
+  - checkpoint: check_interaccion
+
+- story: Respuesta negativa
+  steps:
+  - checkpoint: check_otra_consulta
+  - intent: otra_no
+  - action: utter_despedida
+  - action: action_reset_slots_deuda
+  - action: action_restart

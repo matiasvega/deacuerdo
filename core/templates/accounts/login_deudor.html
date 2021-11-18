@@ -1,0 +1,35 @@
+{% extends "accounts/login.html" %}
+{% load static %}
+
+{% block msg_login %}
+    <p style="font-size: 20px">Ingrese su DNI/CUIT</p>
+{% endblock %}
+
+{% block campos %}
+    {{ form.dni }}
+    {% block msg_error %}{% endblock %}
+{% endblock %}
+
+{% block registrate %}{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('#id_dni').mask('99990000000')
+
+        if ('{{ msg }}' === 'ERROR') {
+            Swal.fire({
+                title: 'Hubo un inconveniente',
+                html: '<p>' +
+                            'El DNI/CUIT ingresado no se encuentra registrado en nuestra base de datos. <br><br>' +
+                            'Si considera que esto es un error, puede comunicarse con nosotros a traves de las ' +
+                            'siguientes vias:<br><br>' +
+                            'Llamando al <b>0810 999 33832</b> o al <b>011 4320 3000</b> de Lunes a Viernes de 9 a 20 hs o' +
+                            'Sábados de 9 a 13 hs.<br><br>' +
+                            'Whatsapp: <b>351 5214082</b>'+
+                      '</p>',
+                showConfirmButton: false,
+                showCloseButton: true
+            })
+        }
+    </script>
+{% endblock %}

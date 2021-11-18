@@ -1,0 +1,41 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Completar registro {% endblock %}
+
+{% block more-stylesheets %}
+    <style>
+        .contenedor_cent {
+            margin: auto;
+            max-width: 50%;
+        }
+
+        @media (max-width: 768px) {
+            .contenedor_cent {
+                max-width: 100%;
+            }
+        }
+
+        .btn-registro {
+            width: 100%;
+            font-size: 20px;
+            border-radius: 30px;
+            background-color: #5843f2
+        }
+    </style>
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block main-content %}
+    <div class="contenedor_cent">
+        <h2><b>Complete su registro</b></h2>
+        <form role="form" method="post" action="">
+            {% csrf_token %}
+            {{ form }}
+            <br>
+            <button type="submit" name="register" class="btn btn-registro vnc-light">Completar registro</button>
+        </form>
+    </div>
+{% endblock main-content %}
+
+{% block chatbot-content %}{% endblock %}

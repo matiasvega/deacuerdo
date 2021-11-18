@@ -1,0 +1,99 @@
+.card-inicio {
+    padding: 20px;
+    border-radius: 25px;
+}
+
+.card-inicio h3 {
+    margin: 0;
+}
+
+.card-inicio p {
+    margin: 5px 0;
+}
+
+.btn-inicio {
+    width: auto;
+    color: black;
+    background-color: white;
+    font-size: 20px;
+    border-radius: 30px !important;
+}
+
+.btn-inicio:focus {
+    box-shadow: none;
+}
+
+.btn-cli-deuda {
+    border-color: white;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.btn-acceso-cli-deuda {
+    margin: 5px auto;
+    color: white;
+    text-align: center;
+    border-radius: 15px;
+    padding: 10px
+}
+
+#card-btns-cli-deuda {
+    background-color: Transparent;
+    box-shadow: none;
+}
+
+.btn-acceso-cli-deuda span {
+    display: block;
+}
+
+#head_cupon p {
+    font-size: 32px;
+    align-self: center;
+}
+
+#body_cupon p {
+    text-align: left;
+    font-size: 18px;
+}
+
+#body_cupon span {
+    float: right;
+}
+
+#cod_barras {
+    width: 100%;
+}
+
+.sdp-inline {
+    text-align: center;
+    width: 33.3%;
+    display: inline-block;
+}
+
+.sdp-inline-hora {
+    text-align: center;
+    width: 50%;
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+	.card-hola {
+        margin-top: 0 !important;
+    }
+
+    #head_cupon img {
+        width: 128px;
+        margin-bottom: 15px;
+        left: 25%;
+    }
+
+    #body_cupon p {
+        font-size: 12px;
+    }
+
+    .card-principal .imgWpp {
+        width: 32px;
+    }
+}

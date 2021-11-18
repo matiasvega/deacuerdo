@@ -1,0 +1,87 @@
+{% extends "vnc/inicio.html" %}
+{% load static %}
+
+{% block title %} Equipos {% endblock %}
+
+{% block main-content %}
+    {% if compromisos %}
+        {% for compromiso in compromisos %}
+            <div class="card card-principal card-inicio color_1" style="color: white">
+                <p>
+                    Dni del cliente: {{ compromiso.dni_cliente }}<br>
+                    <b>Equipo: {{ compromiso.equipo }}</b><br>
+                    {% if compromiso.tipo_compromiso == 'R' %}
+                        Domicilio: {{ compromiso.calle }} {{ compromiso.nro }}<br>
+                        {% if compromiso.piso %}
+                            Piso: {{ compromiso.piso }}<br>
+                        {% endif %}
+                        {% if compromiso.entre_calle_1 or compromiso.entre_calle_2 %}
+                            Entre calles:
+                            {% if compromiso.entre_calle_1 %}
+                                {{ compromiso.entre_calle_1 }}
+                            {% endif %}
+                            {% if compromiso.entre_calle_2 %}
+                                {{ compromiso.entre_calle_2 }}
+                            {% endif %}
+                        {% endif %}
+                        {% if compromiso.hora %}
+
+                        {% endif %}
+
+                        Código: {{ compromiso.codigo }}
+                    {% endif %}
+                </p>
+                <br>
+                <div class="row">
+                    {% if compromiso.completado %}
+                        <a href="#" role="button" class="col-sm-5 btn-acceso-cli-deuda color_1 marcar-recuperado" data-url="{% url 'estado_compromiso' compromiso.id 'F' %}">
+                            <img src="{% static 'assets/img/icons-20@4x.png' %}" style="width: 32px" alt=""><span>Desmarcar como recuperado</span>
+                        </a>
+                    {% else %}
+                        <a href="#" role="button" class="col-sm-5 btn-acceso-cli-deuda color_1 marcar-recuperado" data-url="{% url 'estado_compromiso' compromiso.id 'T' %}">
+                            <img src="{% static 'assets/img/icons-20@4x.png' %}" style="width: 32px" alt=""><span>Marcar como recuperado</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="card card-principal card-inicio" style="color: white; background-color: limegreen">
+            <h4>No se encontraron compromisos pendientes para los parametros seleccionados</h4>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block more-scripts %}
+    <script>
+        $('.marcar-recuperado').click(function () {
+            let url = $(this).data('url')
+
+            Swal.fire({
+                title: 'Marcar recuperado',
+                text: 'Este proceso cambiara el estado del compromiso ¿Desea continuar?',
+                showCloseButton: true,
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.when(
+                        $.post(url, {csrfmiddlewaretoken: '{{ csrf_token }}'})
+                    ).then(function () {
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'El proceso se realizó correctamente',
+                            showCloseButton: true,
+                            showConfirmButton: true,
+                            confirmButtonText: 'Confirmar',
+                        }).then(function () {
+                            location.reload()
+                        })
+                    })
+                }
+            })
+        })
+    </script>
+{% endblock %}

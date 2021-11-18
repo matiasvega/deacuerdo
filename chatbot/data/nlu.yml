@@ -1,0 +1,89 @@
+version: "2.0"
+nlu:
+- intent: prueba
+  examples: |
+    - prueba
+- intent: saludo
+  examples: |
+    - hola
+    - que tal
+    - hi
+    - hello
+    - buenos dias
+    - buenas tardes
+    - buen dia bot
+- intent: como_pagar
+  examples: |
+    - como pagar
+    - quiero pagar
+    - formas de pago
+- intent: como_devolver
+  examples: |
+    - como devolver
+    - como entregar
+    - devolver equipo
+    - entregar equipo
+    - retirar equipo
+- intent: solicitar_retiro
+  examples: |
+    - solicitar retiro
+    - quiero que lo retiren
+    - retirar en mi domicilio
+    - quiero que lo pasen a buscar
+- intent: programar_entrega
+  examples: |
+    - programar entrega
+    - quiero entregarlo personalmente
+    - quiero pasar a dejarlo
+- intent: cupon_pago
+  examples: |
+    - cupon
+    - cupon de pago
+    - boleta de pago
+    - recibo de pago
+    - factura de pago
+- intent: pago_tarjeta
+  examples: |
+    - tarjeta
+    - tarjeta de credito
+    - tarjeta de debito
+- intent: contacto
+  examples: |
+    - contacto
+    - contactar
+    - comunicar
+    - comunicarme
+    - hablar
+- intent: ya_pague
+  examples: |
+    - pague
+    - ya pague
+    - informar pago
+    - informar un pago
+    - informar mi pago
+- intent: ya_entregue
+  examples: |
+    - entregue
+    - ya entregue
+    - el equipo ya fue entregado
+    - el dispositivo ya fue entregado
+- intent: otra_si
+  examples: |
+    - otra si
+    - quiero realizar otra consulta
+    - deseo realizar otra consulta
+    - quisiera realziar otra consulta
+    - tengo otra duda
+    - tengo otra consulta
+    - quiero realizar otra operacion
+    - quisiera realziar otra operacion
+    - deseo realizar otra operacion
+- intent: otra_no
+  examples: |
+    - otra no
+    - no quiero
+    - no es necesario
+    - no, gracias
+- intent: opciones_gestion
+  examples: |
+    - opciones gestion

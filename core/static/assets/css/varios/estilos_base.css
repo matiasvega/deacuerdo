@@ -1,0 +1,284 @@
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+.index-page {
+    background-color: #f1f4ff;
+}
+
+.main-content {
+    margin: 20px;
+    width: 100%;
+}
+
+.vnc-dark {
+    background-color: #36338a !important;
+}
+
+.vnc-light {
+    background-color: #e54214 !important;
+}
+
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 275px;
+    max-width: 275px;
+    min-height: 100vh;
+    background: white;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+#sidebarCollapse {
+    position: absolute;
+}
+
+#sidebar.active {
+    min-width: 104px;
+    max-width: 104px;
+    text-align: center;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+a, a:hover, a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+#sidebar .sidebar-header {
+    padding: 15px;
+    background: #6d7fcc;
+    text-align: center;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+    text-align: left;
+    color: #36338a;
+}
+
+#sidebar.active ul li a {
+    padding: 10px;
+    text-align: center;
+    font-size: 0.85em;
+}
+
+#sidebar ul li a span {
+    margin-left: 15px;
+}
+
+#sidebar.active ul li a span {
+    margin-left: 0;
+    display: block;
+}
+
+#sidebar.active ul ul a {
+    padding: 10px !important;
+}
+
+#sidebar ul li.active > a, a[aria-expanded="true"] {
+    color: #fff;
+    background: #6d7fcc;
+}
+
+#sidebar.active .dropdown-toggle::after {
+    top: auto;
+    bottom: 10px;
+    right: 50%;
+    -webkit-transform: translateX(50%);
+    -ms-transform: translateX(50%);
+    transform: translateX(50%);
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+}
+
+.var-button {
+    width: 40px;
+    height: 40px;
+    background-color: Transparent;
+    border: none;
+    margin-bottom: 20px;
+}
+
+.var-button span {
+    width: 80%;
+    height: 2px;
+    margin: 0 auto;
+    display: block;
+    background: #555;
+    transition: all 0.8s cubic-bezier(0.810, -0.330, 0.345, 1.375);
+}
+
+.var-button span:first-of-type {
+    transform: rotate(45deg) translate(2px, 2px);
+}
+.var-button span:nth-of-type(2) {
+    opacity: 0;
+}
+.var-button span:last-of-type {
+    transform: rotate(-45deg) translate(1px, -1px);
+}
+
+.var-button.active span {
+    transform: none;
+    opacity: 1;
+    margin: 5px auto;
+}
+
+#sidebar .sidebar-img {
+    margin-bottom: 7px;
+}
+
+#sidebar.active .sidebar-username,
+#sidebar.active .sidebar-email {
+    display: none;
+}
+
+.card-principal {
+    margin: 25px auto;
+    width: 50%;
+}
+
+form label {
+    margin-bottom: 0;
+    display: block;
+}
+
+form input,
+form select {
+    margin-bottom: 20px;
+}
+
+.select2 {
+    margin-bottom: 20px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+#bottombar {
+    display: none;
+}
+
+.div-btns {
+    text-align: end;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table .dropdown {
+    text-align: right;
+}
+
+/* Configuraciones Mobile */
+@media (max-width: 768px) {
+    .main-content {
+        margin-bottom: 75px;
+    }
+
+    #sidebar {
+        display: none;
+    }
+
+    #bottombar {
+        display: block;
+        text-align: center;
+        padding: 10px;
+        margin: 0;
+    }
+
+    #btn-toggle-bottom {
+        height: 32px;
+    }
+
+    #navbar-bottom {
+        padding: 10px 15px;
+    }
+
+    #navbar-bottom li {
+        margin: 5px 0;
+    }
+
+    #navbar-bottom li span {
+        margin-left: 10px;
+    }
+
+    #sidebarCollapse {
+        display: none;
+    }
+
+    #sidebar.active ul li a {
+        padding: 20px 10px;
+        font-size: 0.85em;
+    }
+
+    #sidebar.active ul li a span {
+        display: none !important;
+    }
+
+    #sidebar.active ul li a i {
+        margin-right:  0;
+        display: block;
+        font-size: 1.8em;
+        margin-bottom: 5px;
+    }
+
+    #sidebar.active ul ul a {
+        padding: 10px !important;
+    }
+
+    .dropdown-toggle::after {
+        top: auto;
+        bottom: 10px;
+        right: 50%;
+        -webkit-transform: translateX(50%);
+        -ms-transform: translateX(50%);
+        transform: translateX(50%);
+    }
+
+    .card-principal {
+        width: 100% !important;
+    }
+
+    .swal2-container {
+        padding: 0 !important;
+    }
+
+    .swal2-modal {
+        height: 100%;
+    }
+}

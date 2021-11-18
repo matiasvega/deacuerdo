@@ -1,0 +1,47 @@
+<script type="text/javascript">
+    function opcion_elemento(opcion, t_elemento, elemento_id) {
+        $("#modal_generico_body").empty()
+        $("#modal_generico_footer").empty()
+
+        let titulo, body, footer_btn_confirmar
+        let footer_btn_cancelar = "<button type='button' class='btn btn-danger' data-dismiss='modal' style='margin-left: 10px'>Cerrar</button>"
+
+        if (opcion === 'B') {
+            titulo = "Confirmación de Baja"
+            body = "<p>Está seguro que desea dar de baja el elemento seleccionado? </p>"
+            let fn_eliminar = eliminar_elemento(t_elemento, elemento_id)
+            footer_btn_confirmar = "<button type='button' class='btn btn-success' data-dismiss='modal' onclick='" + fn_eliminar +"'>Confirmar</button>"
+        } else {
+            titulo = "Confirmación de Modificación"
+            body = "<p>Está seguro que desea modificar el elemento seleccionado?</p>"
+            let fn_modificar = modificar_elemento(t_elemento, elemento_id)
+            footer_btn_confirmar = "<button type='button' class='btn btn-success' data-dismiss='modal' onclick='" + fn_modificar +"'>Confirmar</button>"
+        }
+
+        $("#modal_generico_titulo").text(titulo)
+        $("#modal_generico_body").append(body)
+        $("#modal_generico_footer").append(footer_btn_confirmar)
+        $("#modal_generico_footer").append(footer_btn_cancelar)
+        $("#modal_generico").modal("show")
+    }
+
+    function eliminar_elemento(t_elemento, elemento_id) {
+        let url = t_elemento === 'U' ? "{% url 'eliminar_usuario' 123 %}" : "{% url 'eliminar_empresa' 123 %}"
+        $.post(url.replace('123', elemento_id), {csrfmiddlewaretoken: '{{ csrf_token }}'}, function (data) {
+            if (data['ok']) {
+                $("#texto_alerta").text(data['msj'])
+                $('#alerta_operacion').removeClass('alert-danger').addClass('alert-success')
+                $("#row_"+elemento_id).remove()
+            }  else {
+                $("#texto_alerta").text(data['msj'])
+                $('#alerta_operacion').addClass('alert-danger').removeClass('alert-success')
+            }
+            $("#alerta_operacion").css("display", "block")
+        })
+    }
+
+    function modificar_elemento(t_elemento, elemento_id) {
+        let url = t_elemento === 'U' ? "{% url 'mod_usuario' 123 %}" : "{% url 'mod_empresa' 123 %}"
+        window.location.href = url.replace('123', elemento_id)
+    }
+</script>

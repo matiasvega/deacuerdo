@@ -1,0 +1,857 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Inicio {% endblock %}
+
+{% block more-stylesheets %}
+    <link href="{% static 'assets/css/varios/estilos_inicio.css' %}" rel="stylesheet"/>
+    <style>
+        #profile_div {
+            display: {% if request.session.dni > 0 %}
+                        block
+                      {% else %}
+                        none
+                      {% endif %};
+        }
+    </style>
+{% endblock %}
+
+{% block main-content %}
+    {% if request.session.dni > 0 %}
+        {% block navbar_user %}{% endblock %}
+         <div class="card card-principal card-inicio card-hola paleta_texto">
+            <h3>Hola, </h3>
+            <h3><b>{{ request.session.deudor.nyap }}</b></h3>
+            <p>Este es el estado de tu cuenta al día <b>{% now "d F Y" %}</b></p>
+        </div>
+
+        {% if request.session.deudas %}
+            {% for deuda in request.session.deudas %}
+                {% if deuda.tipo_deuda == 'deuda_monetaria' %}
+                    <div class="card card-principal card-inicio color_1" style="color: white">
+                        <div class="row" style="margin-left: 0; margin-right: 0">
+                            <div style="width: 90%">
+                                <h4>Registra un saldo pendiente de </h4>
+                            </div>
+                            <div style="width: 10%; text-align: right">
+                                <a class="link_wpp" href="#" target="_blank" data-nro_wpp="{{ deuda.empresa.nro_wpp }}" data-toggle="tooltip" data-placement="top" title="Contáctenos">
+                                    <img class="imgWpp" src="{% static 'assets/img/logos/whatsapp-logo-1.png' %}" alt=""/>
+                                </a>
+                            </div>
+                        </div>
+                        <h3><b>${{ deuda.saldo }}</b></h3>
+                        <p>
+                            con la empresa <b>{{ deuda.empresa.nombre_fantasia }}</b><br>
+                            {% if deuda.servicio %}
+                                por el servicio de <b>{{ deuda.servicio }}</b>
+                            {% endif %}
+                        </p>
+                        <br>
+                        <button type="button" class="btn btn-inicio btn-lg deudor-pago-tarjeta" data-deuda="{{ deuda.id }}">Pagar con tarjeta</button>
+                        <p style="text-align: center">Conozca los <b><a href="#" data-medio_pago='{{ deuda.empresa.medio_pago }}' class="deudor-medios-pago">Medios de Pago</a></b></p>
+                        <button type="button" data-deuda='{{ deuda.id }}' data-url_des='{% url 'print_cupon' deuda.id %}' data-url_mail='{% url 'enviar_cupon' deuda.id %}' class="btn btn-inicio btn-lg deudor-cupon-pago">Cupón de pago</button>
+                        <button type="button" data-deuda='{{ deuda.id }}' class="btn btn-inicio btn-lg deudor-informar-pago">Ya pagué</button>
+                    </div>
+                {% endif %}
+
+                {% if deuda.tipo_deuda == 'recupero_equipo' %}
+                    <div class="card card-principal card-inicio color_1" style="color: white">
+                        <div class="row" style="margin-left: 0; margin-right: 0">
+                            <div style="width: 90%">
+                                <h4>Registra</h4>
+                            </div>
+                            <div style="width: 10%; text-align: right">
+                                <a class="link_wpp" href="#" target="_blank" data-nro_wpp="{{ deuda.empresa.nro_wpp }}" data-toggle="tooltip" data-placement="top" title="Contáctenos">
+                                    <img class="imgWpp" src="{% static 'assets/img/logos/whatsapp-logo-1.png' %}" alt=""/>
+                                </a>
+                            </div>
+                        </div>
+                        <h3><b>{{ deuda.cantidad }} equipo/s pendiente/s de devolución:</b></h3>
+                        <p>
+                            <b>{{ deuda.tipo }}</b> serie <b>{{ deuda.nro_serie }}</b><br>
+                            instalado/s en su domicilio
+                            {% if deuda.servicio %}
+                                al momento de la prestación del servicio <b>{{ deuda.servicio }}</b> brindado
+                            {% endif %}
+                            por la empresa <b>{{ deuda.empresa.nombre_fantasia }}</b>
+                        </p>
+                        <br>
+                        {% if deuda.empresa.permite_retiro %}
+                            <button type="button" data-deuda='{{ deuda.id }}' class="btn btn-inicio btn-lg deudor-sol-retiro">Solicitar retiro</button>
+                        {% endif %}
+                        {% if deuda.empresa.permite_entrega %}
+                            <button type="button" data-deuda='{{ deuda.id }}' class="btn btn-inicio btn-lg deudor-prog-entrega">Entrega en sucursal</button>
+                        {% endif %}
+                        <button type="button" data-deuda='{{ deuda.id }}' class="btn btn-inicio btn-lg deudor-informar-entrega">Ya entregué el/los equipo/s</button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="card card-principal card-inicio" style="color: white; background-color: limegreen">
+                <h4>Su cuenta no registra deuda ni equipos pendientes de devolución</h4>
+            </div>
+        {% endif %}
+
+        {% for compromiso in compromisos %}
+            {% if not compromiso.completado %}
+                <div class="card card-principal card-inicio" style="color: white; background-color: mediumseagreen">
+                    <div class="row">
+                        <div class="col-sm-2" style="text-align: center">
+                            <i class="material-icons" style="font-size: 48px">check_circle_outline</i>
+                        </div>
+                        <div class="col-sm-10" style="text-align: left">
+                            {% if compromiso.tipo_compromiso == 'R' %}
+                                <p>
+                                    Un representante de <b>{{ compromiso.id_empresa.nombre_fantasia }}</b> concurrirá al
+                                    domicilio <b>{{ compromiso.callenro }}</b>, en la localidad de {{ compromiso.localidad }},
+                                    el dia <b>{{ compromiso.fecha }}</b> entre las <b>{{ compromiso.hora }}</b> y las
+                                    <b>{{ compromiso.hora_hasta }}</b> hs.
+                                </p>
+                                <p>Su código de seguridad es: <b>{{ compromiso.codigo }}</b></p>
+                            {% else %}
+                                <p>
+                                    Un representante de <b>{{ compromiso.id_empresa.nombre_fantasia }}</b> lo recibirá
+                                    el dia <b>{{ compromiso.fecha }}</b> a la hora <b> {{ compromiso.hora }}</b>
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <div class="card card-principal card-inicio">
+            <h3>Hola,</h3>
+            <h3><b>{{ user.username }}</b></h3>
+            <p>Bienvenido de nuevo</p>
+        </div>
+
+        <div class="card card-principal card-inicio color_1" style="color: white">
+            <h4>No dudes en contactar a tu referente ante cualquier consulta:</h4>
+            <br>
+            <div class="row">
+                <div class="col-sm-3">
+                    <img class="sidebar-img" src="{% static 'assets/img/icons-28@4x.png' %}" style="width: 72px" alt="">
+                </div>
+                <div class="col-sm-9">
+                    <h3><b>Carlos Vega</b></h3>
+                    <a href="mailto:cvega@vncobranzas.com.ar" target="_blank" role="button" class="btn-cli-deuda">
+                        <img class="sidebar-img" src="{% static 'assets/img/icons-22@4x.png' %}" style="width: 20px" alt="">
+                        <span> cvega@vncobranzas.com.ar</span>
+                    </a>
+                    <br style="margin: 5px">
+                    <a href="#" id="wpp_referente" target="_blank" role="button" class="btn-cli-deuda">
+                        <img class="sidebar-img" src="{% static 'assets/img/icons-23@4x.png' %}" style="width: 20px" alt="">
+                        <span> (11) 6299 8441</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMPRESA_DEUDAS -->
+        {% if request.user.usuarioempresa.role == 1 %}
+            <div class="card card-principal card-inicio row" id="card-btns-cli-deuda">
+                <div class="row">
+                    <a href="#" role="button" class="col-sm-5 btn-acceso-cli-deuda color_1">
+                        <img src="{% static 'assets/img/icons-16@4x.png' %}" style="width: 32px" alt=""><span>Asignación</span>
+                    </a>
+                    <a href="#" role="button" class="col-sm-5 btn-acceso-cli-deuda color_1">
+                        <img src="{% static 'assets/img/icons-20@4x.png' %}" style="width: 32px" alt=""><span>Recupero</span>
+                    </a>
+                    <a href="#" role="button" class="col-sm-5 btn-acceso-cli-deuda color_1">
+                        <img src="{% static 'assets/img/icons-17@4x.png' %}" style="width: 32px" alt=""><span>Calidad</span>
+                    </a>
+                    <a href="#" role="button" class="col-sm-5 btn-acceso-cli-deuda color_1">
+                        <img src="{% static 'assets/img/icons-21@4x.png' %}" style="width: 32px" alt=""><span>Análisis</span>
+                    </a>
+                </div>
+            </div>
+        <!-- EMPRESA_EQUIPOS -->
+        {% elif request.user.usuarioempresa.role == 2 %}
+            <div class="card card-principal card-inicio color_1" style="color: white">
+                <button type="button" class="btn btn-inicio btn-lg cliente-retirar-equipos">Retirar equipos</button>
+                <button type="button" class="btn btn-inicio btn-lg cliente-recibir-equipos">Recibir equipos</button>
+            </div>
+        {% endif %}
+    {% endif %}
+    {{ request.session.dni|json_script:"dni_deudor" }}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'assets/js/varios/chatbot-scripts.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            let dni = '{{ request.session.dni }}'
+
+            let deudor = '{{ request.session.deudor }}'
+            if (deudor !== '') {
+                deudor = deudor.replaceAll('&#x27;', '"')
+                deudor = deudor.replaceAll('\r', '')
+                deudor = deudor.replaceAll(/\s\s+/g, '')
+                deudor = JSON.parse(deudor)
+            }
+
+            let deudas = '{{ request.session.deudas }}'
+            if (deudas !== '') {
+                deudas = deudas.replaceAll('&#x27;', '"')
+                deudas = deudas.replaceAll(': True,', ': true,')
+                deudas = deudas.replaceAll(': False,', ': false,')
+                deudas = JSON.parse(deudas)
+            }
+
+            $('.datos_deudor').click(function () {
+                let fd, url = '{% url "inicio" %}'
+
+                Swal.fire({
+                    title: 'Editar datos',
+                    html: '<form id="form_deudor" role="form" method="post" action="">' +
+                            '{% csrf_token %}' +
+                            '<input name="tipo_form" value="D" type="hidden"/>' +
+                            '{{ formDeudor|escapejs }}' +
+                          '</form>',
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    focusConfirm: false,
+                    confirmButtonText:'Confirmar',
+                    cancelButtonText: 'Cancelar',
+                    input: 'text',
+                    willOpen: function () {
+                        $('.swal2-input').hide()
+                    },
+                    inputValidator: () => {
+                        let form = document.getElementById('form_deudor')
+                        if (!form.checkValidity()) {
+                            return 'Complete todos los campos marcados con (*)'
+                        }
+
+                        url = form.getAttribute('action')
+                        fd = new FormData(form)
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.LoadingOverlay("show")
+
+                        let request = new XMLHttpRequest()
+                        request.open("POST", url)
+                        request.onreadystatechange = function() {
+                            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                                window.location = ""
+                            }
+                        }
+                        request.send(fd)
+                    }
+                })
+            })
+
+            $('.deudor-pago-tarjeta').click(function () {
+                let id_deuda = $(this).data('deuda')
+                let deuda = deudas.find(deuda => parseInt(deuda.id) === id_deuda)
+                let fd, url = '{% url "inicio" %}'
+
+                Swal.fire({
+                    title: 'Pago con tarjeta',
+                    html: '<p>' +
+                            'Para realizar un pago con tarjeta de crédito/débito, por favor dejanos tus datos para un registro ordenado.' +
+                        '</p><br>' +
+                        '<form id="form_contacto" role="form" method="post" action="">' +
+                            '{% csrf_token %}' +
+                            '<input name="tipo_form" value="C" type="hidden"/>' +
+                            '{{ formContacto|escapejs }}' +
+                        '</form>',
+                    showCloseButton: true,
+                    showCancelButton: false,
+                    focusConfirm: false,
+                    confirmButtonText:'Confirmar',
+                    input: 'text',
+                    willOpen: function () {
+                        $('.swal2-input').hide()
+                        $('label[for="id_id_deuda"]').hide()
+                        $('label[for="id_id_empresa"]').hide()
+                        $('#id_id_deuda').val(id_deuda)
+                        $('#id_id_empresa').val(deuda.empresa_id)
+                    },
+                    inputValidator: (value) => {
+                        let form = document.getElementById('form_contacto')
+                        if (!form.checkValidity()) {
+                            return 'Complete todos los campos y verifique que el formato esperado sea el correcto'
+                        }
+                        url = form.getAttribute('action')
+                        fd = new FormData(form)
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire(
+                            'Pago con tarjeta',
+                            'Su solicitud fue enviada. Uno de nuestros representantes se comunicara a la brevedad para ' +
+                            'continuar la gestión de pago.',
+                            'success'
+                        ).then(function () {
+                            let request = new XMLHttpRequest()
+                            request.open("POST", url)
+                            request.send(fd)
+                        })
+                    }
+                })
+            })
+
+            $('.deudor-medios-pago').click(function () {
+                let medio_pago= $(this).data('medio_pago')
+
+                Swal.fire({
+                    title: 'Medios de Pago',
+                    text: 'Los medios de pago disponibles son: ' + medio_pago,
+                    icon: 'info',
+                    showCloseButton: true,
+                })
+            })
+
+            $('.deudor-cupon-pago').click(function () {
+                let deuda_id = $(this).data('deuda')
+                let url_des = $(this).data('url_des')
+                let url_mail = $(this).data('url_mail')
+                let deuda = deudas.find(deuda => parseInt(deuda.id) === deuda_id)
+                let servicio = deuda.servicio ? 'Concepto: <span>' + deuda.servicio + '</span><br>' : ''
+                let vencimiento = moment(deuda.vencimiento).format('DD/MM/YYYY')
+
+                if (esMobile()) {
+                    if ($('#sidebar').hasClass('active') && $('#sidebarCollapse').hasClass('active')) {
+                        $('#sidebar').addClass('active')
+                        $('#sidebarCollapse').addClass('active')
+                    }
+                }
+                Swal.fire({
+                    html: '<br><div id="head_cupon" class="row">' +
+                                '<img src="/media/' + deuda.empresa.logo + '" alt="" max-width="128" class="col-sm-6 col-md-4">' +
+                                '<p class="col-sm-6 col-md-8">Cupón de Pago</p>' +
+                            '</div><hr>' +
+                            '<div id="body_cupon">' +
+                                '<p>'+
+                                    'Empresa: <span>' + deuda.empresa.nombre_fantasia + '</span><br>' +
+                                    'Cliente: <span>' + deudor.nyap + '</span><br>' +
+                                    'N° de Cuenta: <span>' + deuda.nrocuenta + '</span><br>' +
+                                    'Importe a Abonar: <span>$' + deuda.saldo + '</span><br>' +
+                                    servicio +
+                                    'Fecha de Vencimiento: <span>'+ vencimiento + '</span><br>' +
+                                '</p>'+
+                                '<svg id="cod_barras"></svg>' +
+                            '</div><hr>' +
+                            '<div id="footer_cupon">' +
+                                '<p>Medios de pago</p>' +
+                                '<div id="medios_pago_cupon">' +
+                                    '<div class="row" style="align-items: center">' +
+                                        '<div class="col">' +
+                                            '<img src="{% static 'assets/img/logos/pago-facil-logo.png' %}" style="width: 48px" alt="">' +
+                                        '</div>' +
+                                        '<div class="col">' +
+                                            '<img src="{% static 'assets/img/logos/rapipago-logo.png' %}" style="width: 48px" alt="">' +
+                                        '</div>' +
+                                        '<div class="col">' +
+                                            '<img src="{% static 'assets/img/logos/Mercadopago-logo.png' %}" style="width: 48px" alt="">' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div><br>',
+                    width: 600,
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    confirmButtonText:'Descargar cupón',
+                    cancelButtonText:'Enviar a mi correo',
+                    cancelButtonColor: '#e54214',
+                    willOpen: function () {
+                        JsBarcode("#cod_barras", deuda.codbarra, {height: 50, displayValue: true})
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.open(url_des, "_blank")
+                    }
+                    if (result.isDismissed) {
+                        if (result.dismiss === 'cancel') {
+                            Swal.fire({
+                                html: '<h4>' +
+                                            'El cupón se enviará al siguiente correo: ' + deudor.email +
+                                      '</h4><br>' +
+                                      '<h5>' +
+                                            'Puede cambiar su dirección de correo en el botón "Configuración" del menu, o haciendo click ' +
+                                            '<a href="#" class="a_datos_deudor" style="color: #00b0ff">aquí</a>' +
+                                      '</h5>',
+                                text: 'El cupon se enviará al siguiente correo: ' + deudor.email,
+                                showCloseButton: true,
+                                showCancelButton: true,
+                                confirmButtonText:'Aceptar',
+                                cancelButtonText:'Cancelar',
+                                willOpen: function () {
+                                    $('.a_datos_deudor').click(function () {
+                                        $('.datos_deudor').trigger('click')
+                                    })
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $.post(url_mail)
+                                }
+                            })
+                        }
+                    }
+                })
+            })
+
+            $('.deudor-informar-pago').click(function () {
+                let id_deuda = $(this).data('deuda')
+                let fd, url = '{% url "inicio" %}'
+                if (esMobile()) {
+                    $('#sidebar').addClass('active')
+                    $('#sidebarCollapse').addClass('active')
+                }
+                Swal.fire({
+                    title: 'Ingrese los datos del pago',
+                    html: '<form id="form_pago" role="form" method="post" action="">' +
+                            '{% csrf_token %}' +
+                            '<input name="tipo_form" value="IP" type="hidden"/>' +
+                            '{{ formInformePago|escapejs }}' +
+                          '</form>',
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    focusConfirm: false,
+                    confirmButtonText:'Continuar',
+                    cancelButtonText: 'Cancelar',
+                    input: 'text',
+                    willOpen: function () {
+                        $('.swal2-input').hide()
+                        $('label[for="id_id_deuda"]').hide()
+                        $('label[for="id_tipo_deuda"]').hide()
+                        $('#id_id_deuda').val(id_deuda)
+                        $('#id_tipo_deuda').val('deuda_monetaria')
+
+                        let f_max = String(moment().add(1,'d').format('YYYY-MM-DD'))
+                        let f_min = String(moment().add(-364,'d').format('YYYY-MM-DD'))
+
+                        $('#id_fecha').dropdownDatepicker({
+                            defaultDate: String(moment().format('YYYY-MM-DD')),
+                            minDate: f_min,
+                            maxDate: f_max,
+                            required: true
+                        })
+                        $('#id_fecha').hide()
+                        $('#id_fecha').siblings().addClass('form-control sdp-inline')
+                    },
+                    inputValidator: () => {
+                        let form = document.getElementById('form_pago')
+                        if (!form.checkValidity()) {
+                            return 'Complete todos los campos'
+                        }
+                        url = form.getAttribute('action')
+                        fd = new FormData(form)
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire('Éxito', 'Sus datos se han guardado correctamente para validación. ' +
+                            'Estaremos en contacto por cualquier consulta. Muchas gracias', 'success').then(function () {
+                            let request = new XMLHttpRequest()
+                            request.open("POST", url)
+                            request.send(fd)
+                        })
+                    }
+                })
+            })
+
+            $('.deudor-informar-entrega').click(function () {
+                let id_deuda = $(this).data('deuda')
+                let fd, url = '{% url "inicio" %}'
+                if (esMobile()) {
+                    $('#sidebar').addClass('active')
+                    $('#sidebarCollapse').addClass('active')
+                }
+                Swal.fire({
+                    title: 'Ingrese los datos de la entrega',
+                    html: '<form id="form_entrega" role="form" method="post" action="">' +
+                            '{% csrf_token %}' +
+                            '<input name="tipo_form" value="IE" type="hidden"/>' +
+                            '{{ formInforme|escapejs }}' +
+                          '</form>',
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    focusConfirm: false,
+                    confirmButtonText:'Confirmar',
+                    cancelButtonText: 'Cancelar',
+                    input: 'text',
+                    willOpen: function () {
+                        $('.swal2-input').hide()
+                        $('label[for="id_id_deuda"]').hide()
+                        $('label[for="id_tipo_deuda"]').hide()
+                        $('#id_id_deuda').val(id_deuda)
+                        $('#id_tipo_deuda').val('deuda_monetaria')
+
+                        let f_max = String(moment().add(1,'d').format('YYYY-MM-DD'))
+                        let f_min = String(moment().add(-364,'d').format('YYYY-MM-DD'))
+
+                        $('#id_fecha').dropdownDatepicker({
+                            defaultDate: String(moment().format('YYYY-MM-DD')),
+                            minDate: f_min,
+                            maxDate: f_max,
+                            required: true
+                        })
+                        $('#id_fecha').hide()
+                        $('#id_fecha').siblings().addClass('form-control sdp-inline')
+                    },
+                    inputValidator: (value) => {
+                        let form = document.getElementById('form_entrega')
+                        if (!form.checkValidity()) {
+                            return 'Complete todos los campos'
+                        }
+                        url = form.getAttribute('action')
+                        fd = new FormData(form)
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire('Éxito', 'Sus datos fueron guardados con éxito para la validación, estaremos en contacto.', 'success').then(function () {
+                            let request = new XMLHttpRequest()
+                            request.open("POST", url)
+                            request.send(fd)
+                        })
+                    }
+                })
+            })
+
+            $('.deudor-sol-retiro').click(function () {
+                let id_deuda = $(this).data('deuda')
+                let deuda = deudas.find(deuda => parseInt(deuda.id) === id_deuda)
+                let codigo = Math.random().toString(36).substring(2,10)
+                if ($('#sidebar').hasClass('active') && $('#sidebarCollapse').hasClass('active')) {
+                    $('#sidebar').addClass('active')
+                    $('#sidebarCollapse').addClass('active')
+                }
+
+                Swal.fire({
+                    title: 'Solicitar retiro',
+                    html: '<form id="form_i_retiro" role="form" method="post" action="">' +
+                            '{% csrf_token %}' +
+                            '<input name="tipo_form" value="R" type="hidden"/>' +
+                            '{{ formRetiro|escapejs }}' +
+                          '</form>',
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    focusConfirm: false,
+                    confirmButtonText:'Programar una cita',
+                    cancelButtonText: 'Cancelar',
+                    input: 'text',
+                    willOpen: function () {
+                        $('.swal2-input').hide()
+                        $('label[for="id_id_deuda"]').hide()
+                        $('label[for="id_equipo"]').hide()
+                        $('label[for="id_tipo_compromiso"]').hide()
+                        $('label[for="id_dni_cliente"]').hide()
+                        $('label[for="id_id_empresa"]').hide()
+                        $('label[for="id_codigo"]').hide()
+                        $('label[for="id_hora_hasta"]').hide()
+                        $('label[for="id_localidad"]').hide()
+                        $('#id_localidad').hide()
+                        $('#id_id_deuda').val(id_deuda)
+                        $('#id_equipo').val(deuda.cantidad + ' - ' + deuda.tipo + ' - ' + deuda.nro_serie)
+                        $('#id_dni_cliente').val(dni)
+                        $('#id_id_empresa').val(deuda.empresa_id)
+                        $('#id_codigo').val(codigo)
+
+                        let f_min = String(moment().add(1,'d').format('YYYY-MM-DD'))
+                        let f_max = String(moment().add(31,'d').format('YYYY-MM-DD'))
+
+                        $('#id_fecha').dropdownDatepicker({
+                            defaultDate: String(moment().format('YYYY-MM-DD')),
+                            minDate: f_min,
+                            maxDate: f_max,
+                            required: true
+                        })
+                        $('#id_fecha').hide()
+                        $('#id_fecha').siblings().addClass('form-control sdp-inline')
+
+                        $('#id_hora').timepicker({'scrollDefault': 'now',
+                                                  'step': 30,
+                                                  'timeFormat': 'H:i',
+                                                  'minTime': deuda.empresa.hora_minima,
+                                                  'maxTime': deuda.empresa.hora_maxima,
+                                                  'useSelect': true
+                                                })
+
+                        $('#id_hora_hasta').timepicker({'scrollDefault': 'now',
+                                                  'step': 30,
+                                                  'timeFormat': 'H:i',
+                                                  'minTime': deuda.empresa.hora_minima,
+                                                  'maxTime': deuda.empresa.hora_maxima,
+                                                  'useSelect': true
+                                                })
+
+                        $('.ui-timepicker-select').addClass('form-control')
+
+                        $('#id_provincia').change(function () {
+                            if ($(this).val() !== "") {
+                                $.post('../listar_localidades_front/' + $(this).val() + '/', {}, function (data) {
+                                    $('#id_localidad').html(data)
+                                })
+                                $('label[for="id_localidad"]').show()
+                                $('#id_localidad').show()
+                            } else {
+                                $('label[for="id_localidad"]').hide()
+                                $('#id_localidad').hide()
+                                $('#id_localidad').html("")
+                            }
+
+                        })
+                    },
+                    inputValidator: () => {
+                        let form = document.getElementById('form_i_retiro')
+                        let calle_1 = $('#id_entre_calle_1').val()
+                        let calle_2 = $('#id_entre_calle_2').val()
+
+                        if (!form.checkValidity()) {
+                            return 'Complete todos los campos marcados con (*)'
+                        }
+                        if ((calle_1 !== '' && calle_2 === '') || (calle_1 === '' && calle_2 !== '')) {
+                            return 'Ambos valores de "Entre calle..." deben ser completados'
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let dia = $('#id_fecha').siblings(".day").val()
+                        let mes = $('#id_fecha').siblings(".month").val()
+                        let anio = $('#id_fecha').siblings(".year").val()
+                        let fecha = dia + '/' + mes + '/' + anio
+                        let hora_desde = $('#id_hora').val()
+                        let hora_hasta = $('#id_hora_hasta').val()
+                        let form = document.getElementById('form_i_retiro')
+
+                        let formData = new FormData(form)
+
+                        Swal.fire({
+                            icon: 'success',
+                            html: '<p>Su cita se ha programado con éxito:</p>' +
+                                  '<h3>'+ fecha +'</h3>' +
+                                  '<p>Entre <b>'+ hora_desde +'</b> y <b>'+ hora_hasta +'</b> hs</p>' +
+                                  '<p>Su código de seguridad es:</p>' +
+                                  '<h3><b>' + codigo + '</b></h3>' +
+                                  '<p>Recuerde presentar el equipo con los cables de alimentación y la tarjeta de programación</p>',
+                            showCloseButton: true,
+                            showConfirmButton: false,
+                            showCancelButton: false
+                        }).then(function () {
+                            $.LoadingOverlay("show")
+
+                            let request = new XMLHttpRequest()
+                            request.open('POST', '')
+                            request.onreadystatechange = function() {
+                                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                                    window.location = ""
+                                }
+                            }
+                            request.send(formData)
+                        })
+                    }
+                })
+            })
+
+            $('.deudor-prog-entrega').click(function () {
+                let id_deuda = $(this).data('deuda')
+                let deuda = deudas.find(deuda => parseInt(deuda.id) === id_deuda)
+                if ($('#sidebar').hasClass('active') && $('#sidebarCollapse').hasClass('active')) {
+                    $('#sidebar').addClass('active')
+                    $('#sidebarCollapse').addClass('active')
+                }
+                Swal.fire({
+                    title: 'Programar entrega',
+                    html: '<form id="form_i_entrega" role="form" action="">' +
+                            '{% csrf_token %}' +
+                            '<input name="tipo_form" value="E" type="hidden"/>' +
+                            '{{ formEntrega|escapejs }}' +
+                          '</form>',
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    focusConfirm: false,
+                    confirmButtonText:'Programar una cita',
+                    cancelButtonText: 'Cancelar',
+                    input: 'text',
+                    willOpen: function () {
+                        $('.swal2-input').hide()
+                        $('label[for="id_id_deuda"]').hide()
+                        $('label[for="id_equipo"]').hide()
+                        $('label[for="id_tipo_compromiso"]').hide()
+                        $('label[for="id_dni_cliente"]').hide()
+                        $('label[for="id_id_empresa"]').hide()
+                        $('#id_id_deuda').val(id_deuda)
+                        $('#id_equipo').val(deuda.cantidad + ' - ' + deuda.tipo + ' - ' + deuda.nro_serie)
+                        $('#id_dni_cliente').val(dni)
+                        $('#id_id_empresa').val(deuda.empresa_id)
+
+                        let f_min = String(moment().add(1,'d').format('YYYY-MM-DD'))
+                        let f_max = String(moment().add(31,'d').format('YYYY-MM-DD'))
+
+                        $('#id_fecha').dropdownDatepicker({
+                            defaultDate: String(moment().format('YYYY-MM-DD')),
+                            minDate: f_min,
+                            maxDate: f_max,
+                            required: true
+                        })
+                        $('#id_fecha').hide()
+                        $('#id_fecha').siblings().addClass('form-control sdp-inline')
+
+
+                        $('#id_hora').timepicker({'scrollDefault': 'now',
+                                                  'step': 30,
+                                                  'timeFormat': 'H:i',
+                                                  'minTime': deuda.empresa.hora_minima,
+                                                  'maxTime': deuda.empresa.hora_maxima,
+                                                  'useSelect': true
+                                                })
+                        $('.ui-timepicker-select').addClass('form-control')
+                    },
+                    inputValidator: () => {
+                        let form = document.getElementById('form_i_entrega')
+                        if (!form.checkValidity()) {
+                            return 'Complete todos los campos marcados con (*)'
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let dia = $('#id_fecha').siblings(".day").val()
+                        let mes = $('#id_fecha').siblings(".month").val()
+                        let anio = $('#id_fecha').siblings(".year").val()
+                        let fecha = dia + '/' + mes + '/' + anio
+                        let hora = $('#id_hora').val()
+                        let form = document.getElementById('form_i_entrega')
+                        let formData = new FormData(form)
+
+                        Swal.fire({
+                            icon: 'success',
+                            html: '<p>Su cita se ha programado con éxito:</p>' +
+                                  '<h3>'+ fecha +'</h3>' +
+                                  '<h3>'+ hora +'</h3>' +
+                                  '<p>Recuerde presentar el equipo con los cables de alimentación y la tarjeta de programación</p>',
+                            showCloseButton: true,
+                            showConfirmButton: false,
+                            showCancelButton: false
+                        }).then(function () {
+                            $.LoadingOverlay("show")
+
+                            let request = new XMLHttpRequest()
+                            request.open('POST', '')
+                            request.onreadystatechange = function() {
+                                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                                    window.location = ""
+                                }
+                            }
+                            request.send(formData)
+                        })
+                    }
+                })
+            })
+
+            $('.cliente-retirar-equipos').click(function () {
+                if ($('#sidebar').hasClass('active') && $('#sidebarCollapse').hasClass('active')) {
+                    $('#sidebar').addClass('active')
+                    $('#sidebarCollapse').addClass('active')
+                }
+                Swal.fire({
+                    title: 'Listar compromisos',
+                    html: '<form id="form_fecha" role="form" action="">' +
+                            '{% csrf_token %}' +
+                            '{{ formFecha|escapejs }}' +
+                          '</form>',
+                    showCloseButton: true,
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Cancelar',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let dia = $('#id_fecha_desde_day').val()
+                        let mes = $('#id_fecha_desde_month').val()
+                        let anio = $('#id_fecha_desde_year').val()
+                        let fecha_desde = anio + '-' + mes + '-' + dia
+
+                        dia = $('#id_fecha_hasta_day').val()
+                        mes = $('#id_fecha_hasta_month').val()
+                        anio = $('#id_fecha_hasta_year').val()
+                        let fecha_hasta = anio + '-' + mes + '-' + dia
+
+                        let url = '{% url 'listar_equipos' 123 456 'R' %}'
+                        url = url.replace('123', fecha_desde)
+                        url = url.replace('456', fecha_hasta)
+                        window.location.href = url
+                    }
+                })
+            })
+
+            $('.cliente-recibir-equipos').click(function () {
+                if ($('#sidebar').hasClass('active') && $('#sidebarCollapse').hasClass('active')) {
+                    $('#sidebar').addClass('active')
+                    $('#sidebarCollapse').addClass('active')
+                }
+                Swal.fire({
+                    title: 'Listar compromisos',
+                    html: '<form id="form_fecha" role="form" action="">' +
+                            '{% csrf_token %}' +
+                            '{{ formFecha|escapejs }}' +
+                          '</form>',
+                    showCloseButton: true,
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let dia = $('#id_fecha_desde_day').val()
+                        let mes = $('#id_fecha_desde_month').val()
+                        let anio = $('#id_fecha_desde_year').val()
+                        let fecha_desde = anio + '-' + mes + '-' + dia
+
+                        dia = $('#id_fecha_hasta_day').val()
+                        mes = $('#id_fecha_hasta_month').val()
+                        anio = $('#id_fecha_hasta_year').val()
+                        let fecha_hasta = anio + '-' + mes + '-' + dia
+
+                        let url = '{% url 'listar_equipos' 123 456 'E' %}'
+                        url = url.replace('123', fecha_desde)
+                        url = url.replace('456', fecha_hasta)
+                        window.location.href = url
+                    }
+                })
+            })
+
+            function esMobile() {
+                let hasTouchScreen
+                if ("maxTouchPoints" in navigator) {
+                    hasTouchScreen = navigator.maxTouchPoints > 0
+                } else if ("msMaxTouchPoints" in navigator) {
+                    hasTouchScreen = navigator.msMaxTouchPoints > 0
+                } else {
+                    let mQ = window.matchMedia && matchMedia("(pointer:coarse)")
+                    if (mQ && mQ.media === "(pointer:coarse)") {
+                        hasTouchScreen = !!mQ.matches
+                    } else if ('orientation' in window) {
+                        hasTouchScreen = true
+                    } else {
+                        let UA = navigator.userAgent
+                        hasTouchScreen = (
+                            /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+                            /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA)
+                        )
+                    }
+                }
+                return hasTouchScreen
+            }
+
+            let wpp_link
+            let wpp_deudas = document.querySelectorAll(".link_wpp")
+            if (esMobile()) {
+                wpp_link = "whatsapp://send?phone="
+
+            } else {
+                wpp_link = "https://wa.me/"
+            }
+
+            wpp_deudas.forEach(deuda => {
+                let nro = $(deuda).data('nro_wpp')
+                $(deuda).prop('href', wpp_link + nro)
+            })
+
+            $('#wpp_referente').prop('href', wpp_link + "{{ request.session.wpp_vnc }}")
+        })
+    </script>
+    {% block more-scripts %}{% endblock %}
+{% endblock %}

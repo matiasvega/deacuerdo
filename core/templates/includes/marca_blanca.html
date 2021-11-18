@@ -1,0 +1,34 @@
+<style>
+    .color_1 {
+        background-color: {{ request.session.empresa.paleta_color_1 }} !important;
+    }
+
+    .color_2 {
+        background-color: {% if request.session.empresa.paleta_color_2 != '' %}
+                            {{ request.session.empresa.paleta_color_2 }}
+                          {% else %}
+                            {{ request.session.empresa.paleta_color_1 }}
+                          {% endif %}  !important;
+    }
+
+    .paleta_texto {
+        color: {{ request.session.empresa.paleta_texto }} !important;
+    }
+
+    #deudor-medios-pago,
+    #btn_send,
+    .userMsg {
+        color: {{ request.session.empresa.paleta_texto }};
+    }
+
+    #navbar-bottom ul li a,
+    #sidebar ul li a,
+    .chat_header_title,
+    .chat_header span {
+        color: {% if request.session.empresa.paleta_texto != '' %}
+                  {{ request.session.empresa.paleta_texto }}
+               {% else %}
+                  #000000
+               {% endif %};
+    }
+</style>

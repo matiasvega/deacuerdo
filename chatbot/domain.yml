@@ -1,0 +1,337 @@
+version: '2.0'
+
+config:
+  store_entities_as_slots: true
+
+session_config:
+  session_expiration_time: 30
+  carry_over_slots_to_new_session: false
+
+intents:
+- prueba:
+    use_entities: true
+- intent_deuda:
+    use_entities: true
+- saludo:
+    use_entities: true
+- como_pagar:
+    use_entities: true
+- cupon_pago:
+    use_entities: true
+- pago_tarjeta:
+    use_entities: true
+- contacto:
+    use_entities: true
+- ya_pague:
+    use_entities: true
+- ya_entregue:
+    use_entities: true
+- como_devolver:
+    use_entities: true
+- solicitar_retiro:
+    use_entities: true
+- programar_entrega:
+    use_entities: true
+- otra_si:
+    use_entities: true
+- otra_no:
+    use_entities: true
+- opciones_gestion:
+    use_entities: true
+- reiniciar_bot:
+    use_entities: true
+
+slots:
+  deudor:
+    type: any
+  deudas:
+    type: any
+  deuda:
+    type: any
+  id_deuda:
+    type: text
+    influence_conversation: false
+  empresa:
+    type: any
+  vnc:
+    type: any
+    influence_conversation: false
+  mult_deudas:
+    type: bool
+    influence_conversation: true
+  sin_deudas:
+    type: bool
+    influence_conversation: true
+  telefono:
+    type: text
+    influence_conversation: false
+  email:
+    type: text
+    influence_conversation: false
+  fecha_informe_pago:
+    type: text
+    influence_conversation: false
+  lugar_informe_pago:
+    type: text
+    influence_conversation: false
+  monto_informe_pago:
+    type: rasa.shared.core.slots.FloatSlot
+    influence_conversation: false
+    min_value: 0.0
+  comprobante_pago:
+    type: any
+    influence_conversation: false
+  fecha_informe_entrega:
+    type: text
+    influence_conversation: false
+  lugar_informe_entrega:
+    type: text
+    influence_conversation: false
+  monto_informe_entrega:
+    type: rasa.shared.core.slots.FloatSlot
+    influence_conversation: false
+    min_value: 0.0
+  comprobante_entrega:
+    type: any
+    influence_conversation: false
+  fecha_retiro:
+    type: text
+    influence_conversation: false
+  hora_desde:
+    type: text
+    influence_conversation: false
+  hora_hasta:
+    type: text
+    influence_conversation: false
+  provincia:
+    type: text
+    influence_conversation: false
+  provincia_id:
+    type: text
+    influence_conversation: false
+  localidad:
+    type: text
+    influence_conversation: false
+  localidad_id:
+    type: text
+    influence_conversation: false
+  tipo_vivienda:
+    type: text
+    influence_conversation: false
+  callenro:
+    type: text
+    influence_conversation: false
+  codigo:
+    type: text
+    influence_conversation: false
+  fecha_entrega:
+    type: text
+    influence_conversation: false
+  hora_entrega:
+    type: text
+    influence_conversation: false
+
+responses:
+  utter_formas_devolucion:
+  - text: Las formas de devolución de equipo son
+    buttons:
+    - title: Solicitar retiro
+      payload: /solicitar_retiro
+    - title: Programar entrega
+      payload: /programar_entrega
+    custom: {keypad: disabled}
+  utter_cupon_de_pago:
+  - text: "Puede descargar su cupón de pago desde el siguiente link:<br>
+          <a href=''><u>Descargar mi cupón</u></a>"
+  utter_pago_tarjeta:
+  - text: Para realizar un pago con tarjeta de crédito/débito, por favor dejanos tus datos para un registro ordenado.
+  utter_cierre_tarjeta:
+  - text: Su solicitud fue enviada. Uno de nuestros representantes se comunicara a la brevedad para continuar la gestión de pago
+  utter_contacto:
+  - text: Para poder iniciar un contacto, necesitamos algunos datos
+  utter_solicitar_datos:
+  - text: Para poder realizar la operación, necesitamos algunos datos
+  utter_ya_pague:
+  - text: Para poder finalizar el proceso de pago, necesitamos algunos datos
+  utter_ask_telefono:
+  - text: Ingrese su número de teléfono
+  utter_ask_email:
+  - text: Ingrese su email
+  utter_ask_fecha_retiro:
+  - text: Ingrese la fecha en la cual desea recibir al representante
+    custom:
+      input_type: date
+      keypad: readonly
+      extra_data: "compromiso"
+  utter_ask_hora_desde:
+  - text: Ingrese la hora mínima para el retiro
+    custom:
+      input_type: time
+      keypad: readonly
+      extra_data: "{empresa}"
+  utter_ask_hora_hasta:
+  - text: Ingrese la hora máxima para el retiro
+    custom:
+      input_type: time
+      keypad: readonly
+      extra_data: "{empresa}"
+  utter_ask_provincia:
+  - text: Ingrese la provincia de residencia
+    custom: {input_type: select, select_data: provincia}
+  utter_ask_localidad:
+  - text: Ingrese la localidad de residencia
+    custom:
+      input_type: select
+      select_data: localidad
+      extra_data: "{provincia_id}"
+  utter_ask_tipo_vivienda:
+  - text: Seleccione el tipo de vivienda
+    custom: {input_type: select, select_data: tipo_vivienda}
+  utter_ask_callenro:
+  - text: Seleccione la calle y número del domicilio
+  utter_ask_fecha_entrega:
+  - text: Ingrese la fecha en la cual realizará la entrega
+    custom:
+      input_type: date
+      keypad: readonly
+      extra_data: "compromiso"
+  utter_ask_hora_entrega:
+  - text: Ingrese la hora en la cual realizará la entrega
+    custom:
+      input_type: time
+      keypad: readonly
+      extra_data: "{empresa}"
+  utter_ask_lugar_informe_pago:
+  - text: Ingrese el lugar donde realizó el pago
+  utter_ask_fecha_informe_pago:
+  - text: Ingrese la fecha de pago
+    custom:
+      input_type: date
+      keypad: readonly
+      extra_data: "informe"
+  utter_ask_monto_informe_pago:
+  - text: Ingrese el monto abonado
+  utter_ask_comprobante_pago:
+  - text: Ingrese o capture una fotografia del comprobante de pago
+    custom: {input_type: file, keypad: readonly}
+  utter_ask_lugar_informe_entrega:
+  - text: Ingrese el lugar donde se realizó la entrega
+  utter_ask_fecha_informe_entrega:
+    - text: Ingrese la fecha de entrega
+      custom:
+        input_type: date
+        keypad: readonly
+        extra_data: "informe"
+  utter_ask_monto_informe_entrega:
+    - text: Ingrese el monto abonado
+  utter_ask_comprobante_entrega:
+    - text: Ingrese o capture una fotografia del comprobante de entrega
+      custom: {input_type: file, keypad: readonly}
+  utter_cierre_contacto:
+  - text: Se ha enviado su solicitud al grupo de contacto. En breve se comunicaran con ud.
+  utter_cierre_retiro:
+  - text: Un representante concurrirá al domicilio {callenro}, en la localidad de {localidad}, el dia {fecha_retiro}, entre {hora_desde}hs y {hora_hasta}hs. Su código de identificación es {codigo}.
+  utter_cierre_entrega:
+  - text: Un representante lo recibira el dia {fecha_entrega}, a la hora {hora_entrega}.
+  utter_ya_entregue:
+  - text: Para poder finalizar el proceso de entrega, necesitamos algunos datos
+  utter_realizar_otra_accion:
+  - text: ¿Desea realizar otra consulta u operación?
+    buttons:
+    - title: Si
+      payload: /otra_si
+    - title: No
+      payload: /otra_no
+    custom: {keypad: disabled}
+  utter_despedida:
+  - text: Muchas gracias por utilizar nuestros servicios, que tenga un excelente dia
+  utter_repetir:
+  - text: No pude entender lo que quiso decir ¿podria repetirlo?
+
+actions:
+- action_saludo
+- action_opciones
+- action_boton_cupon
+- action_botones_deuda
+- action_set_slots
+- action_opciones_pago
+- action_procesar_compromiso_retiro
+- action_procesar_compromiso_entrega
+- action_procesar_informe_pago
+- action_procesar_informe_entrega
+- action_procesar_contacto
+- action_nros_contacto
+- action_reset_slots_deuda
+- validate_contacto_form
+- validate_informe_pago_form
+- validate_informe_entrega_form
+- validate_retiro_form
+- validate_entrega_form
+
+forms:
+  contacto_form:
+    required_slots:
+      email:
+      - entity: email
+        type: from_text
+      telefono:
+      - entity: telefono
+        type: from_text
+  informe_pago_form:
+    required_slots:
+      fecha_informe_pago:
+      - entity: fecha_informe_pago
+        type: from_text
+      lugar_informe_pago:
+      - entity: lugar_informe_pago
+        type: from_text
+      monto_informe_pago:
+      - entity: monto_informe_pago
+        type: from_text
+      comprobante_pago:
+      - entity: comprobante_pago
+        type: from_text
+  informe_entrega_form:
+    required_slots:
+      fecha_informe_entrega:
+        - entity: fecha_informe_entrega
+          type: from_text
+      lugar_informe_entrega:
+        - entity: lugar_informe_entrega
+          type: from_text
+      comprobante_entrega:
+        - entity: comprobante_entrega
+          type: from_text
+  retiro_form:
+    required_slots:
+      fecha_retiro:
+      - entity: fecha_retiro
+        type: from_text
+      hora_desde:
+      - entity: hora_desde
+        type: from_text
+      hora_hasta:
+      - entity: hora_hasta
+        type: from_text
+      provincia:
+      - entity: provincia
+        type: from_text
+      localidad:
+      - entity: localidad
+        type: from_text
+      tipo_vivienda:
+      - entity: tipo_vivienda
+        type: from_text
+      callenro:
+      - entity: callenro
+        type: from_text
+  entrega_form:
+    required_slots:
+      fecha_entrega:
+      - entity: fecha_entrega
+        type: from_text
+      hora_entrega:
+      - entity: hora_entrega
+        type: from_text
+
+e2e_actions: []

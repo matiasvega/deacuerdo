@@ -1,0 +1,67 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Login {% endblock %}
+
+{% block more-stylesheets %}
+    <style>
+        .card-login {
+            margin: 80px 45px 100px;
+        }
+
+        .logo-login {
+            max-width: 75%;
+        }
+
+        @media (max-width: 768px) {
+            .logo-login {
+                max-width: 70%;
+            }
+        }
+
+        .logo-login {
+            margin: 50px auto;
+            display: block;
+        }
+
+        .mensaje-login {
+            text-align: center;
+        }
+
+        #id_dni {
+            height: calc(2.4375rem + 2px);
+            text-align: center;
+            font-size: 32px
+        }
+
+        .btn-login {
+            width: 100%;
+            font-size: 20px;
+            border-radius: 30px;
+            background-color: #5843f2
+        }
+    </style>
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block main-content %}
+    <div class="row justify-content-center">
+        <div class="card-login col-md-5">
+            <img class="logo-login" src="{% static 'assets/img/logos/deacuerdo-logo-2-full@2x.png' %}" alt="">
+            <div class="mensaje-login">
+                <p style="font-size: 32px"><b>¡Bienvenido!</b></p>
+                {% block msg_login %}{% endblock %}
+            </div>
+
+            <form method="post" action="">
+                {% csrf_token %}
+                {% block campos %}{% endblock %}
+                <button type="submit" name="login" class="btn btn-login vnc-light">Ingresar</button>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block chatbot-content %}{% endblock %}
